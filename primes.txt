@@ -1,0 +1,2 @@
+Execution Time: 1ms Total: 25 Sum: 1060
+Top 10 primes: [53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
