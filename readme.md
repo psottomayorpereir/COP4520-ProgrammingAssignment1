@@ -4,7 +4,9 @@
 
 <br />
 
-### `Compiling and running the code:`
+### Compiling and running the code:
+
+---
 
 1. Open a windows terminal.
 
@@ -16,7 +18,9 @@
 
 <br />
 
-### `Program design:`
+### Program design:
+
+---
 
 This program was designed to find all prime numbers from 1 to 10<sup>8</sup>, their sum, the top 10 maximum primes, and the execution time by using parallel programming.
 
@@ -24,7 +28,9 @@ The work was distributed among 8 concurrent threads in a way that each thread wi
 
 <br />
 
-### `Correctness and Efficiency:`
+### Correctness and Efficiency:
+
+---
 
 The code assigns a prime candidate to each thread in a round fashion. For example, thread 0 would find if the number 0 is a prime, thread 1 would check the number 1, thread 2 would check the number 2, and so on up to the last thread (thread 7) that would check the number 7. At the point where we assigned all threads a number, we would go back to thread 0 and assign the next number to be checked (8 in this case) and repeat the process until we reach the limit 10<sup>8</sup>. By doing this, we make sure that the work among the threads is as close as possible to be equally distributed since finding the factors of numbers that are close to each other should take approximately the same amount of time.
 
@@ -34,7 +40,9 @@ The program runs an efficient algorithm to check if a number is prime. First, we
 
 <br />
 
-### `Experimental evaluation:`
+### Experimental evaluation:
+
+---
 
 The code was tested with different test cases and the output for each test is as follows:
 
