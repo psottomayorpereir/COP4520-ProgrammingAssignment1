@@ -6,21 +6,17 @@
 
 ## `Compiling and running the code:`
 
----
+1. Open a windows terminal.
 
-#### 1. Open a windows terminal.
+2. Go to the directory of **Main.java** file by using `cd` command.
 
-#### 2. Go to the directory of **Main.java** file by using `cd` command.
+3. Type **java Main.java** and hit enter.
 
-#### 3. Type **java Main.java** and hit enter.
-
-#### 4. The code will run and write the output to a file named **primes.txt** on the current directory.
+4. The code will run and write the output to a file named **primes.txt** on the current directory.
 
 <br />
 
 ## `Program design:`
-
----
 
 #### This program was designed to find all prime numbers from 1 to 10<sup>8</sup>, their sum, the top 10 maximum primes, and the execution time by using parallel programming.
 
@@ -29,8 +25,6 @@
 <br />
 
 ## `Correctness and Efficiency:`
-
----
 
 #### The code assigns a prime candidate to each thread in a round fashion. For example, thread 0 would find if the number 0 is a prime, thread 1 would check the number 1, thread 2 would check the number 2, and so on up to the last thread (thread 7) that would check the number 7. At the point where we assigned all threads a number, we would go back to thread 0 and assign the next number to be checked (8 in this case) and repeat the process until we reach the limit 10<sup>8</sup>. By doing this, we make sure that the work among the threads is as close as possible to be equally distributed since finding the factors of numbers that are close to each other should take approximately the same amount of time.
 
@@ -41,8 +35,6 @@
 <br />
 
 ## `Experimental evaluation:`
-
----
 
 #### The code was tested with different test cases and the output for each test is as follows:
 
