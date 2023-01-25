@@ -36,7 +36,7 @@ The code assigns a prime candidate to each thread in a round fashion. For exampl
 
 <br />
 
-The program runs an efficient algorithm to check if a number is prime. First, we check if the number equals to 2, 3, or 5. If so, we return true as the number is prime. Then we check if the number is less than or equal to 1 or if it is even. If so, we return false as the number is not prime. If none of the returns is triggered, we run a for loop to check if the number is divisible by every odd number starting at 3 up to the square root of the number we are checking. If at some point the number we are checking is divisible by another number within the defined range, leaving a remainder of 0, we return false as the number is not prime. Else, we return true as the number is prime.
+The program runs an efficient algorithm to check if a number is prime. First, we check if the number equals to 2, 3, or 5. If so, we return true as the number is prime. Then we check if the number is less than 2 or if it is even. If so, we return false as the number is not prime. If none of the returns is triggered, we run a for loop to check if the number is divisible by every odd number starting at 3 up to the square root of the number we are checking. If at some point the number we are checking is divisible by another number leaving a remainder of 0, we return false as the number is not prime. Else, we return true as the number is prime.
 
 <br />
 
