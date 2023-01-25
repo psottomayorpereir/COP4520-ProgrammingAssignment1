@@ -8,11 +8,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
-    //set maximum number to search
-    static final int MAX_NUMBER = 100000000;
-
     //set the number of threads
     static final int THREADS = 8;
+
+    //set maximum number to search
+    static final int MAX_NUMBER = 100000000;
 
     //list of all primes up to maximum number
     static ArrayList<Integer> primeNumbers = new ArrayList<Integer>(MAX_NUMBER);
@@ -26,7 +26,6 @@ public class Main {
 
         //spawn threads
         Thread myThreads[] = new Thread[THREADS];
-        Primes.m = new Monitor();
         for (int i=0; i<THREADS; i++){
             myThreads[i] = new Thread(new Primes(i));
             myThreads[i].start();
@@ -67,21 +66,22 @@ public class Main {
         
     }
 
-    public synchronized static void addPrime(int num) {
+    public synchronized static void primeToList(int num) {
         //add the prime number found to the list of primes
         primeNumbers.add(num);
     }
 
     public static boolean isPrime(int num) {
         //check if the number is prime
-        if (num == 2 || num == 3 || num == 5){
+        if (num==2 || num==3 || num==5){
             return true;
         }
-        if (num <= 1 || num%2 == 0){
+        if (num<2 || num%2==0){
             return false;
         }
-        for (int i=3; i<=Math.sqrt(num); i+=2){
-            if (num%i == 0){
+        int sqrt = (int)Math.sqrt(num)+1;
+        for (int i=3; i<sqrt; i+=2){
+            if (num%i==0){
                 return false;
             }
         }
@@ -91,7 +91,7 @@ public class Main {
   }
 
 class Primes implements Runnable {
-    public static Monitor m;
+    //public static Monitor m;
     final int index;
 
     public Primes(int i){
@@ -100,21 +100,13 @@ class Primes implements Runnable {
     }
 
     public void run(){
-        //assign numbers for each thread
-        //to check if the number is prime or not
+        //assign numbers for each thread to check if the number is prime or not
         for(int i=0; i<Main.MAX_NUMBER; i++){
-            if(i%Main.THREADS == index){
+            if(i%Main.THREADS==index){
                 if(Main.isPrime(i)){
-                    m.addPrime(i);
+                    Main.primeToList(i);
                 }
             }
         }
     }
   }
-
-class Monitor {
-    public synchronized void addPrime(int num) {
-        //add prime number
-	    Main.addPrime(num);
-    }
-}
