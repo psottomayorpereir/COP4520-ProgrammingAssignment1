@@ -18,6 +18,15 @@
 
 <br />
 
+### Output (also in the **primes.txt** file):
+
+---
+
+> Execution Time: 9674ms Total: 5761455 Sum: 279209790387276 <br />
+> Top 10 primes: [99999787, 99999821, 99999827, 99999839, 99999847, 99999931, 99999941, 99999959, 99999971, 99999989]
+
+<br />
+
 ### Program design:
 
 ---
