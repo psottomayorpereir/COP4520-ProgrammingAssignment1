@@ -11,11 +11,16 @@ public class Main {
     //set the number of threads
     static final int THREADS = 8;
 
+    //total number of primes, sum, and partition size for splitting the work among the threads
+    static int total=0;
+    static long sum=0;
+    static int partition=10000;
+
     //set maximum number to search
     static final int MAX_NUMBER = 100000000;
 
     //list of all primes up to maximum number
-    static ArrayList<Integer> primeNumbers = new ArrayList<Integer>(MAX_NUMBER);
+    static NavigableSet<Integer> primeNumbers = new TreeSet<Integer>();
 
     //list of last 10 primes
     static ArrayList<Integer> lastTenPrimes = new ArrayList<Integer>(10);
@@ -24,7 +29,7 @@ public class Main {
         //get start time
         long startTime = System.currentTimeMillis();
 
-        //spawn threads
+        //spawn and join threads
         Thread myThreads[] = new Thread[THREADS];
         for (int i=0; i<THREADS; i++){
             myThreads[i] = new Thread(new Primes(i));
@@ -34,26 +39,30 @@ public class Main {
             myThreads[i].join();
         }
 
-        //find the total number of primes
-        int total = primeNumbers.size();
-
-        //find the sum of all primes found and sort the list
-        long sum=0;
-        for(int i=0;i<total;i++){
-            sum+=primeNumbers.get(i);
+        //iterate through the primes and get the highest 10
+        //also compute the sum of the primes
+        Iterator<Integer> reverse = primeNumbers.descendingIterator();
+        int count=0;
+        while(reverse.hasNext()){
+            int number=reverse.next();
+            if(count<10){
+                lastTenPrimes.add(number);
+                count++;
+            }
+            sum+=number;
         }
-        Collections.sort(primeNumbers);
 
-        //find the last 10 primes
-        for(int i=total-10;i<total;i++){
-            lastTenPrimes.add(primeNumbers.get(i));
-        }
+        //sort the array with the last 10 primes
+        Collections.sort(lastTenPrimes);
+
+        //get the total number of primes found
+        total=primeNumbers.size();
 
         //get end time and calculate the time taken (end - start)
         long endTime = System.currentTimeMillis();
         long timeTaken = (endTime - startTime);
 
-        //write execution time, total number of primes found, and sum of primes to primes.txt
+        //write execution time, total number of primes found, sum of primes, and last 10 primes to primes.txt
         try{
             FileWriter myWriter = new FileWriter("primes.txt");
             myWriter.write("Execution Time: " + timeTaken + "ms Total: " + total + " Sum: " + sum);
@@ -71,27 +80,52 @@ public class Main {
         primeNumbers.add(num);
     }
 
-    public static boolean isPrime(int num) {
-        //check if the number is prime
-        if (num==2 || num==3 || num==5){
-            return true;
+    public static void sieve(int bottom, int top) {
+        //create an array for the odd numbers and set the values as prime for all
+        int[] arr = new int[(top-bottom+1)/2];
+        Arrays.fill(arr,1);
+
+        //add 2 as a prime
+        if(bottom<=2){
+            primeNumbers.add(2);
         }
-        if (num<2 || num%2==0){
-            return false;
-        }
-        int sqrt = (int)Math.sqrt(num)+1;
-        for (int i=3; i<sqrt; i+=2){
-            if (num%i==0){
-                return false;
+        
+        //loop to check odd numbers within the range [bottom,to]
+        for(int i=3; i*i<=top; i+=2){
+            //get past the numbers from the previous partition
+            int minimum = ((bottom + i - 1)/i)*i;
+            if(minimum<i*i){
+                minimum=i*i;
+            }
+
+            //make the start number an odd one
+            if(minimum%2==0){
+                minimum+=i;
+            }
+
+            //mark all non-primes
+            for(int j=minimum;j<=top;j+=2*i){
+                int index=j-bottom;
+                arr[index/2]=0;
             }
         }
-        return true;
+
+        //compute the total number of primes
+        //also add the prime numbers to the navigable set
+        for(int i=0;i<(top-bottom+1)/2;i++){
+            if(arr[i]==1){
+                int num=bottom+(i*2)+1;
+                primeToList(num);
+            }
+        }
+
+        return;
     }
 
   }
 
 class Primes implements Runnable {
-    //public static Monitor m;
+    //thread number
     final int index;
 
     public Primes(int i){
@@ -100,13 +134,23 @@ class Primes implements Runnable {
     }
 
     public void run(){
-        //assign numbers for each thread to check if the number is prime or not
-        for(int i=0; i<Main.MAX_NUMBER; i++){
+        //set the initial bottom and check how many times we need to repeat the loop
+        int bottom=2;
+        //assign blocks for each thread
+        for(int i=0; i<Main.MAX_NUMBER/Main.partition; i++){
+            //increment bottom by partition if i!=0
+            if(i!=0) bottom+=Main.partition;
+            //assign the block to the thread in a round fashion
             if(i%Main.THREADS==index){
-                if(Main.isPrime(i)){
-                    Main.primeToList(i);
+                //calculate top number and make sure it does not exceed the MAX_NUMBER
+                int top=bottom+Main.partition;
+                if(top>Main.MAX_NUMBER){
+                    top=Main.MAX_NUMBER;
                 }
+                //sieve on the designated block
+                Main.sieve(bottom,top);
             }
         }
+
     }
   }
